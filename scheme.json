@@ -1,0 +1,45 @@
+{
+  "mappings": {
+    "log": {
+      "_timestamp": {
+        "enabled": true,
+        "path": "timestamp"
+      },
+      "properties": {
+        "url": {
+          "type": "multi_field",
+          "fields": {
+            "url": {
+              "type": "string",
+              "index": "analyzed"
+            },
+            "full": {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        "title": {
+          "type": "string",
+          "analyzer": "kuromoji"
+        },
+        "body": {
+          "type": "string",
+          "analyzer": "kuromoji"
+        },
+        "tags": {
+          "type": "object",
+          "index": "not_analyzed"
+        },
+        "description": {
+          "type": "string",
+          "analyzer": "kuromoji"
+        },
+        "icon": {
+          "type": "string",
+          "index": "not_analyzed"
+        }
+      }
+    }
+  }
+}

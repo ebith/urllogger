@@ -1,0 +1,25 @@
+{
+  "name": "urlLogger",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.coffee",
+  "scripts": {
+    "start": "NODE_ENV=production coffee index.coffee",
+    "test": "mocha -s 3s -t 5s --compilers coffee:coffee-script/register test.coffee"
+  },
+  "author": "ebith",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.6.4",
+    "coffee-script": "^1.7.1",
+    "connect-assets": "^4.3.0",
+    "express": "^4.8.3",
+    "jade": "^1.5.0",
+    "request": "^2.40.0",
+    "stylus": "^0.47.3"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "mocha": "^1.21.4"
+  }
+}

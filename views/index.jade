@@ -1,0 +1,32 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    title URL Logger
+    link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css')
+    script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/vue/0.10.5/vue.min.js')
+    script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js')
+    != js('main')
+    != css('style')
+
+  body
+    header
+      .container
+        h1 URL Logger
+    #content
+      .container
+        .input-group
+          .input-group-btn
+            button.btn.btn-default(type='button', v-on='click: recent') Recent
+          input.form-control(type='text', v-on='keydown: search | key enter', v-model='query')
+          .input-group-btn
+            button.btn.btn-default(type='button', v-on='click: search') Search
+        #results
+          #hits(v-cloak)
+            .hit(v-repeat='items')
+              ul
+                li
+                  img.favicon(v-attr='src:icon')
+                  a(v-attr='href:url') {{title}}
+    footer
+      .container
