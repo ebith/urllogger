@@ -1,6 +1,6 @@
 system = require('system')
 
-require('webserver').create().listen system.env.PORT + 1 or 3001, (request, response) ->
+require('webserver').create().listen Number(system.env.PORT) + 1 or 3001, (request, response) ->
   page = require('webpage').create()
   page.settings.loadImages = false
 
