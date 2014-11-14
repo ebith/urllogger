@@ -58,7 +58,7 @@ app.post '/', (appReq, appRes) -> # {{{
           'url.full': appReq.body.url
   request.get options, (err, res, body) ->
     hits = body.hits
-    if hits.total is 0
+    if hits.total is 0 or new Date().getTime() > new Date(hits[0]._source.timestamp) + 2629743830 # 一ヶ月前
       options =
         url: "http://localhost:#{Number(process.env.PORT) + 1 or 3001}/"
         json: true
