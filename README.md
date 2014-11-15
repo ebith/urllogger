@@ -1,4 +1,4 @@
-# url-logger?
+# URL Logger
 
 ## 説明
 URLをPOSTするとページのタイトルや本文ともに保存して後から検索できるようにするやつ
@@ -12,6 +12,7 @@ URLをPOSTするとページのタイトルや本文ともに保存して後か�
 ``` sh
 npm install
 npm start
+phantomjs phantomjs.coffee
 curl -X POST http://localhost:9200/url-logger -d @scheme.json
 ```
 
