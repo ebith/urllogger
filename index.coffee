@@ -65,19 +65,20 @@ app.post '/', (appReq, appRes) -> # {{{
           url: appReq.body.url
       request.post options, (err, res, page) ->
         if not page.title or not page.body then return do appRes.status(406).end
-        options =
-          url: 'http://localhost:9200/url-logger/log'
-          json:
-            timestamp: new Date()
-            url: appReq.body.url
-            title: page.title
-            body: page.body
-            tags: {}
-            icon: page.icon
-            description: page.description
-        options.json.tags[appReq.body.tag] = 1
-        request.post options, (err, res, body) ->
-          appRes.status(res.statusCode).json page
+        imgUrl2base64 page.icon, (icon) ->
+          options =
+            url: 'http://localhost:9200/url-logger/log'
+            json:
+              timestamp: new Date()
+              url: appReq.body.url
+              title: page.title
+              body: page.body
+              tags: {}
+              icon: icon
+              description: page.description
+          options.json.tags[appReq.body.tag] = 1
+          request.post options, (err, res, body) ->
+            appRes.status(res.statusCode).json page
     else
       options =
         url: "http://localhost:9200/url-logger/log/#{hits.hits[0]._id}/_update"
@@ -91,3 +92,11 @@ app.post '/', (appReq, appRes) -> # {{{
 # }}}
 
 app.listen process.env.PORT or '3000'
+
+imgUrl2base64 = (url, callback) ->
+  request.get url, encoding: 'binary', (err, res, body) ->
+    if res.statusCode is 200
+      img = new Buffer(body.toString(), 'binary').toString 'base64'
+      callback "data:#{res.headers['content-type']};base64,#{img}"
+    else
+      callback 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' # 空白画像
