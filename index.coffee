@@ -1,4 +1,3 @@
-execFile = require('child_process').execFile
 request = require 'request'
 liburl = require 'url'
 
