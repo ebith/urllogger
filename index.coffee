@@ -19,7 +19,7 @@ app.get '/recent', (appReq, appRes) -> # {{{
     json:
       _source:
         exclude: ['body']
-      size: 20
+      size: 100
       sort:
         timestamp: order: 'desc'
       # filter:
