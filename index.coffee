@@ -1,5 +1,6 @@
 request = require 'request'
 liburl = require 'url'
+nightmare = require 'nightmare'
 
 express = require 'express'
 bodyParser = require 'body-parser'
@@ -58,27 +59,31 @@ app.post '/', (appReq, appRes) -> # {{{
   request.get options, (err, res, body) ->
     hits = body.hits
     if hits.total is 0 or new Date().getTime() > new Date(hits[0]._source.timestamp) + 2629743830 # 一ヶ月前
-      options =
-        url: "http://localhost:#{Number(process.env.PORT) + 1 or 3001}/"
-        json: true
-        headers:
-          url: appReq.body.url
-      request.post options, (err, res, page) ->
-        if not page.title or not page.body then return do appRes.status(406).end
-        imgUrl2base64 page.icon, (icon) ->
-          options =
-            url: 'http://localhost:9200/url-logger/log'
-            json:
-              timestamp: new Date()
-              url: appReq.body.url
-              title: page.title
-              body: page.body
-              tags: {}
-              icon: icon
-              description: page.description
-          options.json.tags[appReq.body.tag] = 1
-          request.post options, (err, res, body) ->
-            appRes.status(res.statusCode).json page
+      new nightmare(loadImages: false)
+        .useragent 'Mozilla/5.0'
+        .goto appReq.body.url
+        .evaluate ->
+          title: document.title
+          body: document.body.textContent.replace(/\s+/g, ' ')
+          description: document.getElementsByName('description')[0]?.content
+          icon: (e.href for e in document.getElementsByTagName('link') when /^shortcut\s+icon$|^icon$/.test e.rel)[0] or "#{document.location.protocol}//#{document.location.host}/favicon.ico"
+        , (page) ->
+          if not page.title or not page.body then return do appRes.status(406).end
+          imgUrl2base64 page.icon, (icon) ->
+            options =
+              url: 'http://localhost:9200/url-logger/log'
+              json:
+                timestamp: new Date()
+                url: appReq.body.url
+                title: page.title
+                body: page.body
+                tags: {}
+                icon: icon
+                description: page.description
+            options.json.tags[appReq.body.tag] = 1
+            request.post options, (err, res, body) ->
+              appRes.status(res.statusCode).json page
+        .run()
     else
       options =
         url: "http://localhost:9200/url-logger/log/#{hits.hits[0]._id}/_update"
