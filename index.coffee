@@ -55,10 +55,10 @@ app.post '/', (appReq, appRes) -> # {{{
         exclude: ['body']
       filter:
         term:
-          'url.full': appReq.body.url
+          url: appReq.body.url
   request.get options, (err, res, body) ->
     hits = body.hits
-    if hits.total is 0 or new Date().getTime() > new Date(hits[0]._source.timestamp) + 2629743830 # 一ヶ月前
+    if hits.total is 0 or new Date().getTime() > new Date(hits.hits[0]._source.timestamp) + 2629743830 # 一ヶ月前
       new nightmare(loadImages: false)
         .useragent 'Mozilla/5.0'
         .goto appReq.body.url
