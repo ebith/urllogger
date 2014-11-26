@@ -3,12 +3,10 @@ liburl = require 'url'
 nightmare = require 'nightmare'
 
 express = require 'express'
-bodyParser = require 'body-parser'
-connectAssets = require 'connect-assets'
 app = do express
 app.set 'view engine', 'jade'
-app.use do bodyParser.json
-app.use do connectAssets
+app.use do require('body-parser').json
+app.use do require('connect-assets')
 # app.use express.static "#{__dirname}/public"
 
 app.get '/', (req, res) ->
