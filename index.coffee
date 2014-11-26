@@ -1,6 +1,8 @@
 request = require 'request'
 liburl = require 'url'
 nightmare = require 'nightmare'
+mmmagic = require 'mmmagic'
+magic = new mmmagic.Magic mmmagic.MAGIC_MIME_TYPE
 
 express = require 'express'
 app = do express
@@ -97,9 +99,13 @@ app.post '/', (appReq, appRes) -> # {{{
 app.listen process.env.PORT or '3000'
 
 imgUrl2base64 = (url, callback) ->
-  request.get url, encoding: 'binary', (err, res, body) ->
+  blankImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+  request.get url, encoding: null, (err, res, buffer) ->
     if res.statusCode is 200
-      img = new Buffer(body.toString(), 'binary').toString 'base64'
-      callback "data:#{res.headers['content-type']};base64,#{img}"
+      magic.detect buffer, (err, mime) ->
+        if not err and /image/.test mime
+          callback "data:#{mime};base64,#{buffer.toString 'base64'}"
+        else
+          callback blankImage
     else
-      callback 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' # 空白画像
+      callback blankImage
