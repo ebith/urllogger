@@ -4,8 +4,7 @@ nightmare = require 'nightmare'
 mmmagic = require 'mmmagic'
 magic = new mmmagic.Magic mmmagic.MAGIC_MIME_TYPE
 
-express = require 'express'
-app = do express
+app = do require('express')
 app.set 'view engine', 'jade'
 app.use do require('body-parser').json
 app.use do require('connect-assets')
