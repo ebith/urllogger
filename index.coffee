@@ -9,6 +9,7 @@ app = do express
 app.set 'view engine', 'jade'
 app.use do require('body-parser').json
 app.use do require('connect-assets')
+app.use do require('compression')
 # app.use express.static "#{__dirname}/public"
 
 app.get '/', (req, res) ->
