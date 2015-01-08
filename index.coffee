@@ -60,7 +60,6 @@ app.post '/', (appReq, appRes) -> # {{{
     hits = body.hits
     if hits.total is 0 or new Date().getTime() > new Date(hits.hits[0]._source.timestamp) + 2629743830 # 一ヶ月前
       new nightmare(loadImages: false)
-        .useragent 'Mozilla/5.0'
         .goto appReq.body.url
         .evaluate ->
           title: document.title
