@@ -46,7 +46,7 @@ app.get '/search', (appReq, appRes) -> # {{{
     appRes.json body.hits
 # }}}
 
-app.post '/', (appReq, appRes) -> # {{{
+app.post '/post', (appReq, appRes) -> # {{{
   if not /http|https/.test liburl.parse(appReq.body.url).protocol then return do appRes.status(400).end
   options =
     url: 'http://localhost:9200/url-logger/log/_search'
